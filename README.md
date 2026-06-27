@@ -1,5 +1,8 @@
 # AKWABA — Plateforme SaaS de gestion hôtelière multi-établissements
 
+[![CI](https://github.com/medoune20/AKWABA-PMS/actions/workflows/ci.yml/badge.svg)](https://github.com/medoune20/AKWABA-PMS/actions/workflows/ci.yml)
+
+
 Application web **multi-tenant** permettant à plusieurs hôteliers indépendants de gérer leur
 établissement (réservations, check-in/out, facturation, caisse, encaissements mobiles), avec
 souscription soumise à **validation d'un modérateur** de la plateforme.

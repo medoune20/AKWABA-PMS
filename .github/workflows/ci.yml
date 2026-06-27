@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Installation du SDK .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restauration des dépendances
+        run: dotnet restore AkwabaPMS.sln
+
+      - name: Compilation (Release)
+        run: dotnet build AkwabaPMS.sln --configuration Release --no-restore
+
+      - name: Tests
+        run: |
+          if ls **/*.Tests.csproj >/dev/null 2>&1; then
+            dotnet test AkwabaPMS.sln --configuration Release --no-build --verbosity normal
+          else
+            echo "Aucun projet de test pour le moment — étape ignorée."
+          fi
