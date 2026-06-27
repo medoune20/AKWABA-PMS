@@ -1,0 +1,57 @@
+@model List<TypeChambre>
+@{ ViewData["Title"] = "Types & Tarifs"; }
+<div class="entete"><h1>Types &amp; Tarifs</h1>
+  <a class="btn" asp-action="Index">← Chambres</a></div>
+
+<div class="grille" style="grid-template-columns:2fr 1fr">
+  <div class="carte">
+    <h3>Types de chambre</h3>
+    <table class="t">
+      <thead><tr><th>Libellé</th><th>Capacité</th><th>Tarifs</th></tr></thead>
+      <tbody>
+      @foreach (var t in Model)
+      {
+        <tr>
+          <td><strong>@t.Libelle</strong><div class="aide">@t.Description</div></td>
+          <td>@t.Capacite pers.</td>
+          <td>
+            @foreach (var tar in t.Tarifs)
+            { <span class="badge b-gris" style="margin:1px">@tar.LibelleSaison : @Fcfa.Format(tar.PrixNuitFcfa)</span> }
+          </td>
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+  <div class="carte">
+    <h3>Nouveau type</h3>
+    <form asp-action="CreerType" method="post">
+      @Html.AntiForgeryToken()
+      <div class="champ"><label>Libellé</label><input name="libelle" required/></div>
+      <div class="champ"><label>Capacité</label><input name="capacite" type="number" value="2"/></div>
+      <div class="champ"><label>Description</label><input name="description"/></div>
+      <button class="btn primaire">Créer</button>
+    </form>
+  </div>
+</div>
+
+<div class="carte" style="margin-top:20px;max-width:640px">
+  <h3>Ajouter un tarif</h3>
+  <form asp-action="CreerTarif" method="post">
+    @Html.AntiForgeryToken()
+    <div class="champ"><label>Type</label>
+      <select name="typeChambreId" required>
+        @foreach (var t in Model){<option value="@t.Id">@t.Libelle</option>}
+      </select>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ"><label>Saison</label><input name="saison" value="Standard"/></div>
+      <div class="champ"><label>Prix / nuit (FCFA)</label><input name="prix" type="number" required/></div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ"><label>Du</label><input name="debut" type="date" required/></div>
+      <div class="champ"><label>Au</label><input name="fin" type="date" required/></div>
+    </div>
+    <button class="btn primaire">Ajouter le tarif</button>
+  </form>
+</div>

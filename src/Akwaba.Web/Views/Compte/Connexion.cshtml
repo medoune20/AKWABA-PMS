@@ -1,0 +1,25 @@
+@model ConnexionVm
+@{ ViewData["Title"] = "Connexion"; Layout = "_LayoutCompte"; }
+<form asp-action="Connexion" method="post">
+  <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl"/>
+  <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+  <div class="champ">
+    <label asp-for="Email">Adresse email</label>
+    <input asp-for="Email" autocomplete="username" placeholder="vous@hotel.ci"/>
+    <span asp-validation-for="Email"></span>
+  </div>
+  <div class="champ">
+    <label asp-for="MotDePasse">Mot de passe</label>
+    <input asp-for="MotDePasse" type="password" autocomplete="current-password"/>
+    <span asp-validation-for="MotDePasse"></span>
+  </div>
+  <div class="champ" style="display:flex;align-items:center;gap:8px">
+    <input asp-for="SeSouvenir" type="checkbox" style="width:auto"/>
+    <label asp-for="SeSouvenir" style="margin:0">Se souvenir de moi</label>
+  </div>
+  <button type="submit" class="btn primaire" style="width:100%;justify-content:center">Se connecter</button>
+  <div class="liens">
+    <a asp-action="MotDePasseOublie">Mot de passe oublié ?</a><br/>
+    Nouvel hôtel ? <a asp-action="Inscription">Créer un compte</a>
+  </div>
+</form>

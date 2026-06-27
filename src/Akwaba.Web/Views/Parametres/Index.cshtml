@@ -1,0 +1,38 @@
+@{
+  ViewData["Title"] = "Paramètres";
+  var tenant = (Tenant)ViewBag.Tenant;
+  var utilisateurs = (List<Akwaba.Infrastructure.Persistence.AppliUtilisateur>)ViewBag.Utilisateurs;
+  var refs = (List<DonneeReference>)ViewBag.References;
+}
+<div class="entete"><h1>Paramètres de l'hôtel</h1></div>
+<div class="grille" style="grid-template-columns:1fr 1fr">
+  <div class="carte">
+    <h3>@tenant.Nom</h3>
+    <div class="aide">@tenant.SousDomaine.akwaba.ci · @tenant.Ville</div>
+    <form asp-action="EnregistrerHoraires" method="post" style="margin-top:14px">
+      @Html.AntiForgeryToken()
+      <div class="ligne-champs">
+        <div class="champ"><label>Heure de check-in</label>
+          <input name="checkIn" type="time" value="@tenant.HeureCheckIn.ToString("HH\\:mm")"/></div>
+        <div class="champ"><label>Heure de check-out</label>
+          <input name="checkOut" type="time" value="@tenant.HeureCheckOut.ToString("HH\\:mm")"/></div>
+      </div>
+      <button class="btn primaire">Enregistrer</button>
+    </form>
+  </div>
+  <div class="carte">
+    <h3>Utilisateurs (@utilisateurs.Count)</h3>
+    <table class="t">
+      <thead><tr><th>Nom</th><th>Email</th></tr></thead>
+      <tbody>
+      @foreach (var u in utilisateurs){<tr><td>@u.NomComplet</td><td class="aide">@u.Email</td></tr>}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="carte" style="margin-top:16px">
+  <h3>Référentiels</h3>
+  <div style="display:flex;flex-wrap:wrap;gap:6px">
+    @foreach (var r in refs){<span class="badge b-gris">@r.Categorie : @r.Libelle</span>}
+  </div>
+</div>

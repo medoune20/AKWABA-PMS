@@ -1,0 +1,57 @@
+@{
+  ViewData["Title"] = "Plan d'occupation";
+  var debut = (DateOnly)ViewBag.Debut;
+  var jours = (List<DateOnly>)ViewBag.Jours;
+  var chambres = (List<Chambre>)ViewBag.Chambres;
+  var sejours = (List<Sejour>)ViewBag.Sejours;
+}
+<div class="entete">
+  <h1>Plan d'occupation</h1>
+  <div style="display:flex;gap:8px">
+    <a class="btn sm" asp-action="Index" asp-route-debut="@debut.AddDays(-14).ToString("yyyy-MM-dd")">← 14 j</a>
+    <a class="btn sm" asp-action="Index" asp-route-debut="@DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd")">Aujourd'hui</a>
+    <a class="btn sm" asp-action="Index" asp-route-debut="@debut.AddDays(14).ToString("yyyy-MM-dd")">14 j →</a>
+    <a class="btn primaire" asp-action="Creer">+ Réservation</a>
+  </div>
+</div>
+
+<div class="plan">
+  <table>
+    <thead>
+      <tr><th class="ch">Chambre</th>
+        @foreach (var j in jours)
+        {
+          var we = j.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday;
+          <th class="jour @(we?"we":"")">@j.ToString("ddd")<br/>@j.Day</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var c in chambres)
+      {
+        <tr>
+          <td class="ch">@c.Numero <span class="aide">@c.TypeChambre?.Libelle</span></td>
+          @foreach (var j in jours)
+          {
+            var s = sejours.FirstOrDefault(x => x.ChambreId == c.Id && x.DateArrivee <= j && x.DateDepart > j);
+            if (s is not null)
+            {
+              var cls = s.Statut == StatutSejour.EnCours ? "occ encours" : "occ";
+              <td class="cell"><div class="@cls" title="@s.Reservation?.Client?.NomComplet">
+                @(s.DateArrivee == j ? (s.Reservation?.Client?.NomComplet ?? "Occupé") : "")</div></td>
+            }
+            else
+            {
+              <td class="cell">
+                <a asp-action="Creer" asp-route-arrivee="@j.ToString("yyyy-MM-dd")" asp-route-depart="@j.AddDays(1).ToString("yyyy-MM-dd")"
+                   style="display:block;height:38px"></a></td>
+            }
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+<div class="aide" style="margin-top:10px">
+  <span class="badge b-bleu">Réservé</span> &nbsp; <span class="badge b-vert">En cours (séjour)</span> &nbsp; Cliquez une case libre pour réserver.
+</div>

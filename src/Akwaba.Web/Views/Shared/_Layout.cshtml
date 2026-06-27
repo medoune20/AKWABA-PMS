@@ -1,0 +1,78 @@
+@{
+  var ctrl = (ViewContext.RouteData.Values["controller"] as string) ?? "";
+  bool Actif(string c) => string.Equals(ctrl, c, StringComparison.OrdinalIgnoreCase);
+  var nom = User.FindFirst("nom_complet")?.Value ?? User.Identity?.Name ?? "";
+  var initiales = string.Concat(nom.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(p => p[0])).ToUpper();
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>@ViewData["Title"] · AKWABA</title>
+  <link rel="stylesheet" href="~/css/akwaba.css"/>
+  <script src="~/js/akwaba.js"></script>
+</head>
+<body>
+<div class="app">
+  <div class="voile" onclick="basculerMenu()"></div>
+  <aside class="barre">
+    <div class="marque">
+      <div><span class="logo">AKWABA</span><small>Gestion hôtelière</small></div>
+    </div>
+    <nav class="nav">
+      @if (User.IsInRole("SUPER_ADMIN") || User.IsInRole("MODERATEUR"))
+      {
+        <div class="titre">Plateforme</div>
+        <a class="@(Actif("Admin")?"actif":"")" asp-controller="Admin" asp-action="Souscriptions">📥 Souscriptions</a>
+        @if (User.IsInRole("SUPER_ADMIN"))
+        {
+          <a asp-controller="Admin" asp-action="Hotels">🏨 Hôtels</a>
+        }
+        <a asp-controller="Admin" asp-action="Audit">📜 Journal d'audit</a>
+      }
+      else
+      {
+        <a class="@(Actif("Accueil")?"actif":"")" asp-controller="Accueil" asp-action="Index">📊 Tableau de bord</a>
+        <a class="@(Actif("Reservations")?"actif":"")" asp-controller="Reservations" asp-action="Index">📅 Réservations</a>
+        <a class="@(Actif("Chambres")?"actif":"")" asp-controller="Chambres" asp-action="Index">🛏️ Chambres</a>
+        <a class="@(Actif("Clients")?"actif":"")" asp-controller="Clients" asp-action="Index">👤 Clients</a>
+        <a class="@(Actif("Caisse")?"actif":"")" asp-controller="Caisse" asp-action="Index">💵 Caisse</a>
+        @if (User.IsInRole("GERANT"))
+        {
+          <div class="titre">Administration</div>
+          <a asp-controller="Chambres" asp-action="Types">🏷️ Types &amp; Tarifs</a>
+          <a class="@(Actif("Parametres")?"actif":"")" asp-controller="Parametres" asp-action="Index">⚙️ Paramètres</a>
+        }
+      }
+    </nav>
+    <div class="bas">
+      <div class="user">
+        <div class="avatar">@initiales</div>
+        <div style="min-width:0">
+          <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">@nom</div>
+          <form asp-controller="Compte" asp-action="Deconnexion" method="post" style="margin:0">
+            @Html.AntiForgeryToken()
+            <button class="err" style="background:none;border:none;cursor:pointer;padding:0;font-size:12px">Se déconnecter</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="principal">
+    <div class="topbar">
+      <button class="bascule" onclick="basculerMenu()" style="display:none" id="btnMenu">☰</button>
+      <div style="font-weight:600">@ViewData["Title"]</div>
+      <button class="bascule" onclick="basculerTheme()" title="Thème clair/sombre">◐</button>
+    </div>
+    <div class="contenu">
+      @if (TempData["Ok"] is string ok){<div class="alerte ok">@ok</div>}
+      @if (TempData["Err"] is string er){<div class="alerte ko">@er</div>}
+      @RenderBody()
+    </div>
+  </div>
+</div>
+<script>if(window.matchMedia("(max-width:860px)").matches){document.getElementById("btnMenu").style.display="grid";}</script>
+</body>
+</html>

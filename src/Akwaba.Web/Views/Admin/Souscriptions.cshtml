@@ -1,0 +1,34 @@
+@model List<Tenant>
+@{ ViewData["Title"] = "Souscriptions en attente"; }
+<div class="entete"><h1>Souscriptions en attente</h1>
+  <span class="badge b-ambre">@Model.Count en attente</span></div>
+
+@if (Model.Count == 0){<div class="carte"><div class="etat-vide">Aucune demande en attente. 🎉</div></div>}
+else
+{
+  <div class="grille" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr))">
+  @foreach (var t in Model)
+  {
+    <div class="carte">
+      <h3 style="margin-bottom:2px">@t.Nom</h3>
+      <div class="aide">@t.SousDomaine.akwaba.ci · @t.Ville</div>
+      <div style="margin:10px 0;font-size:13px">
+        <div>📞 @t.Telephone</div>
+        <div class="aide">Demandé le @t.CreeLe.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <form asp-action="Approuver" method="post" style="flex:1">
+          @Html.AntiForgeryToken()<input type="hidden" name="id" value="@t.Id"/>
+          <button class="btn primaire" style="width:100%;justify-content:center">Approuver</button>
+        </form>
+        <button class="btn danger" onclick="document.getElementById('r-@t.Id').style.display='block'">Refuser</button>
+      </div>
+      <form asp-action="Refuser" method="post" id="r-@t.Id" style="display:none;margin-top:10px">
+        @Html.AntiForgeryToken()<input type="hidden" name="id" value="@t.Id"/>
+        <div class="champ"><input name="motif" placeholder="Motif du refus" required/></div>
+        <button class="btn danger" style="width:100%;justify-content:center">Confirmer le refus</button>
+      </form>
+    </div>
+  }
+  </div>
+}

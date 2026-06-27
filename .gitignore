@@ -1,0 +1,36 @@
+## .NET / Visual Studio
+bin/
+obj/
+out/
+*.user
+*.userosscache
+*.suo
+*.cache
+.vs/
+.vscode/
+*.swp
+
+## Rider / JetBrains
+.idea/
+*.sln.iml
+
+## Build & publish
+[Dd]ebug/
+[Rr]elease/
+publish/
+*.dll
+*.pdb
+
+## EF Core (garder les migrations si présentes, ignorer le reste)
+*.db
+*.db-shm
+*.db-wal
+
+## Secrets & config locale (NE PAS committer de vraies clés)
+appsettings.*.Local.json
+secrets.json
+.env
+
+## OS
+.DS_Store
+Thumbs.db

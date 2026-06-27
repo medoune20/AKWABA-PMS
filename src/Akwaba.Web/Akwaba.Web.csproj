@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Akwaba.Web</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Akwaba.Infrastructure\Akwaba.Infrastructure.csproj" />
+    <ProjectReference Include="..\Akwaba.Application\Akwaba.Application.csproj" />
+    <ProjectReference Include="..\Akwaba.Domain\Akwaba.Domain.csproj" />
+  </ItemGroup>
+</Project>

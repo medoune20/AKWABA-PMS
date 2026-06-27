@@ -1,0 +1,10 @@
+@{ ViewData["Title"] = "En attente de validation"; Layout = "_LayoutCompte"; }
+<div style="text-align:center">
+  <div style="font-size:40px">⏳</div>
+  <h2>Compte en attente</h2>
+  <p style="color:var(--texte-doux)">Votre hôtel a bien été enregistré. Un modérateur AKWABA doit valider votre souscription avant l'activation. Vous recevrez une notification dès l'approbation.</p>
+  <form asp-controller="Compte" asp-action="Deconnexion" method="post" style="margin-top:18px">
+    @Html.AntiForgeryToken()
+    <button class="btn" style="width:100%;justify-content:center">Se déconnecter</button>
+  </form>
+</div>

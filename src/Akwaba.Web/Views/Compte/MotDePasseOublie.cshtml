@@ -1,0 +1,14 @@
+@{ ViewData["Title"] = "Mot de passe oublié"; Layout = "_LayoutCompte"; }
+@if (ViewBag.Message is string m){<div class="alerte info">@m</div>}
+@if (ViewBag.Lien is string lien)
+{
+  <div class="alerte ok">Mode développement — lien de réinitialisation : <a href="@lien">@lien</a></div>
+}
+<form asp-action="MotDePasseOublie" method="post">
+  <div class="champ">
+    <label>Adresse email</label>
+    <input name="email" type="email" required placeholder="vous@hotel.ci"/>
+  </div>
+  <button class="btn primaire" style="width:100%;justify-content:center">Envoyer le lien</button>
+  <div class="liens"><a asp-action="Connexion">Retour à la connexion</a></div>
+</form>

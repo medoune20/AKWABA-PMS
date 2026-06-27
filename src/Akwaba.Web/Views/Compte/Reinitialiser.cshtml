@@ -1,0 +1,21 @@
+@model ReinitialiserVm
+@{ ViewData["Title"] = "Réinitialiser"; Layout = "_LayoutCompte"; }
+@if (ViewBag.Ok == true)
+{
+  <div class="alerte ok">Mot de passe réinitialisé.</div>
+  <a class="btn primaire" asp-action="Connexion" style="width:100%;justify-content:center">Se connecter</a>
+}
+else
+{
+  <form asp-action="Reinitialiser" method="post">
+    <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+    <input type="hidden" asp-for="Email"/>
+    <input type="hidden" asp-for="Token"/>
+    <div class="champ">
+      <label asp-for="MotDePasse"></label>
+      <input asp-for="MotDePasse" type="password"/>
+      <span asp-validation-for="MotDePasse"></span>
+    </div>
+    <button class="btn primaire" style="width:100%;justify-content:center">Valider</button>
+  </form>
+}

@@ -1,0 +1,46 @@
+@model InscriptionVm
+@{ ViewData["Title"] = "Inscription"; Layout = "_LayoutCompte"; }
+<form asp-action="Inscription" method="post">
+  <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+  <div class="champ">
+    <label asp-for="NomHotel"></label>
+    <input asp-for="NomHotel" placeholder="Ex. Ivoire Palace Hôtel"/>
+    <span asp-validation-for="NomHotel"></span>
+  </div>
+  <div class="ligne-champs">
+    <div class="champ">
+      <label asp-for="SousDomaine"></label>
+      <input asp-for="SousDomaine" placeholder="ivoire-palace"/>
+      <span asp-validation-for="SousDomaine"></span>
+    </div>
+    <div class="champ">
+      <label asp-for="Ville"></label>
+      <input asp-for="Ville"/>
+    </div>
+  </div>
+  <div class="champ">
+    <label asp-for="Telephone"></label>
+    <input asp-for="Telephone" placeholder="+225 ..."/>
+  </div>
+  <hr style="border:none;border-top:1px solid var(--bord);margin:16px 0"/>
+  <div class="champ">
+    <label asp-for="NomComplet"></label>
+    <input asp-for="NomComplet"/>
+    <span asp-validation-for="NomComplet"></span>
+  </div>
+  <div class="ligne-champs">
+    <div class="champ">
+      <label asp-for="Email"></label>
+      <input asp-for="Email"/>
+      <span asp-validation-for="Email"></span>
+    </div>
+    <div class="champ">
+      <label asp-for="MotDePasse"></label>
+      <input asp-for="MotDePasse" type="password"/>
+      <span asp-validation-for="MotDePasse"></span>
+    </div>
+  </div>
+  <div class="aide" style="margin-bottom:12px">Votre hôtel sera soumis à validation avant activation.</div>
+  <button type="submit" class="btn primaire" style="width:100%;justify-content:center">Créer mon compte</button>
+  <div class="liens">Déjà inscrit ? <a asp-action="Connexion">Se connecter</a></div>
+</form>

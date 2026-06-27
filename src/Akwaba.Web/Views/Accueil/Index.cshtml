@@ -1,0 +1,47 @@
+@{
+  ViewData["Title"] = "Tableau de bord";
+  var k = (IndicateursTableauBord)ViewBag.Indicateurs;
+  var arrivees = (List<Sejour>)ViewBag.Arrivees;
+}
+<div class="entete"><h1>Tableau de bord</h1>
+  <a class="btn primaire" asp-controller="Reservations" asp-action="Creer">+ Nouvelle réservation</a>
+</div>
+
+<div class="kpi">
+  <div class="carte"><div class="l">Taux d'occupation</div><div class="v">@k.TauxOccupation %</div>
+    <div class="sub">@k.ChambresOccupees / @k.ChambresTotal chambres</div></div>
+  <div class="carte"><div class="l">Arrivées du jour</div><div class="v">@k.ArriveesDuJour</div>
+    <div class="sub">@k.DepartsDuJour départ(s)</div></div>
+  <div class="carte"><div class="l">Chambres à nettoyer</div><div class="v">@k.ChambresANettoyer</div>
+    <div class="sub">housekeeping</div></div>
+  <div class="carte"><div class="l">CA du jour</div><div class="v" style="font-size:21px">@Fcfa.Format(k.CaDuJourFcfa)</div>
+    <div class="sub">Mois : @Fcfa.Format(k.CaDuMoisFcfa)</div></div>
+  <div class="carte"><div class="l">ADR (prix moyen)</div><div class="v" style="font-size:21px">@Fcfa.Format(k.AdrFcfa)</div></div>
+  <div class="carte"><div class="l">RevPAR</div><div class="v" style="font-size:21px">@Fcfa.Format(k.RevParFcfa)</div></div>
+</div>
+
+<div class="carte">
+  <h3>Arrivées attendues aujourd'hui</h3>
+  @if (arrivees.Count == 0)
+  {
+    <div class="etat-vide">Aucune arrivée prévue aujourd'hui.</div>
+  }
+  else
+  {
+    <table class="t">
+      <thead><tr><th>Client</th><th>Chambre</th><th>Départ</th><th>Nuits</th><th></th></tr></thead>
+      <tbody>
+      @foreach (var s in arrivees)
+      {
+        <tr>
+          <td>@s.Reservation?.Client?.NomComplet</td>
+          <td><strong>@s.Chambre?.Numero</strong></td>
+          <td>@s.DateDepart.ToString("dd/MM")</td>
+          <td>@s.NombreNuits</td>
+          <td><a class="btn sm" asp-controller="Reservations" asp-action="Detail" asp-route-id="@s.ReservationId">Ouvrir</a></td>
+        </tr>
+      }
+      </tbody>
+    </table>
+  }
+</div>

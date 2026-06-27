@@ -1,0 +1,45 @@
+@model CreationReservationVm
+@{
+  ViewData["Title"] = "Nouvelle réservation";
+  var clients = (List<Client>)ViewBag.Clients;
+  var dispo = (List<Chambre>)ViewBag.ChambresDispo;
+}
+<div class="entete"><h1>Nouvelle réservation</h1>
+  <a class="btn" asp-action="Index">← Plan</a></div>
+
+<div class="carte" style="max-width:640px">
+  <form asp-action="Creer" method="get" style="margin-bottom:18px">
+    <div class="ligne-champs">
+      <div class="champ"><label>Arrivée</label><input name="arrivee" type="date" value="@Model.Arrivee.ToString("yyyy-MM-dd")"/></div>
+      <div class="champ"><label>Départ</label><input name="depart" type="date" value="@Model.Depart.ToString("yyyy-MM-dd")"/></div>
+    </div>
+    <button class="btn">Vérifier les disponibilités</button>
+  </form>
+
+  <form asp-action="Creer" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+    <input type="hidden" asp-for="Arrivee"/><input type="hidden" asp-for="Depart"/>
+    <div class="champ"><label>Client</label>
+      <select asp-for="ClientId">
+        <option value="">— Choisir —</option>
+        @foreach (var c in clients){<option value="@c.Id">@c.NomComplet</option>}
+      </select>
+      <span asp-validation-for="ClientId"></span>
+      <div class="aide">Pas dans la liste ? <a asp-controller="Clients" asp-action="Index">Créer un client</a></div>
+    </div>
+    <div class="champ"><label>Chambre disponible (@dispo.Count)</label>
+      <select asp-for="ChambreId">
+        <option value="">— Choisir —</option>
+        @foreach (var c in dispo){<option value="@c.Id">@c.Numero — @c.TypeChambre?.Libelle</option>}
+      </select>
+      <span asp-validation-for="ChambreId"></span>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ"><label>Adultes</label><input asp-for="NbAdultes" type="number" min="1"/></div>
+      <div class="champ"><label>Canal</label>
+        <select asp-for="Canal"><option>DIRECT</option><option>BOOKING</option><option>EXPEDIA</option><option>TELEPHONE</option></select></div>
+    </div>
+    <button class="btn primaire">Confirmer la réservation</button>
+  </form>
+</div>

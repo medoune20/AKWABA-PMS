@@ -1,0 +1,59 @@
+@model Reservation
+@{
+  ViewData["Title"] = "Réservation";
+  string Badge(StatutSejour s) => s switch {
+    StatutSejour.Reserve => "b-bleu", StatutSejour.EnCours => "b-vert",
+    StatutSejour.Termine => "b-gris", _ => "b-rouge" };
+}
+<div class="entete"><h1>Réservation de @Model.Client?.NomComplet</h1>
+  <a class="btn" asp-action="Index">← Plan</a></div>
+
+<div class="carte" style="margin-bottom:16px">
+  <div style="display:flex;gap:30px;flex-wrap:wrap">
+    <div><div class="aide">Client</div><strong>@Model.Client?.NomComplet</strong></div>
+    <div><div class="aide">Téléphone</div>@Model.Client?.Telephone</div>
+    <div><div class="aide">Canal</div>@Model.Canal</div>
+    <div><div class="aide">Statut</div>@Model.Statut</div>
+  </div>
+</div>
+
+<div class="carte">
+  <h3>Séjours</h3>
+  <table class="t">
+    <thead><tr><th>Chambre</th><th>Arrivée</th><th>Départ</th><th>Nuits</th><th>Prix/nuit</th><th>Statut</th><th>Actions</th></tr></thead>
+    <tbody>
+    @foreach (var s in Model.Sejours)
+    {
+      <tr>
+        <td><strong>@s.Chambre?.Numero</strong></td>
+        <td>@s.DateArrivee.ToString("dd/MM/yyyy")</td>
+        <td>@s.DateDepart.ToString("dd/MM/yyyy")</td>
+        <td>@s.NombreNuits</td>
+        <td>@Fcfa.Format(s.PrixNuitFcfa)</td>
+        <td><span class="badge @Badge(s.Statut)">@s.Statut</span></td>
+        <td style="display:flex;gap:6px">
+          @if (s.Statut == StatutSejour.Reserve)
+          {
+            <form asp-action="CheckIn" method="post">@Html.AntiForgeryToken()
+              <input type="hidden" name="sejourId" value="@s.Id"/>
+              <input type="hidden" name="reservationId" value="@Model.Id"/>
+              <button class="btn sm primaire">Check-in</button></form>
+          }
+          @if (s.Statut == StatutSejour.EnCours && s.Folio is not null)
+          {
+            <a class="btn sm" asp-controller="Folios" asp-action="Detail" asp-route-id="@s.Folio.Id">Note</a>
+            <form asp-action="CheckOut" method="post">@Html.AntiForgeryToken()
+              <input type="hidden" name="sejourId" value="@s.Id"/>
+              <input type="hidden" name="reservationId" value="@Model.Id"/>
+              <button class="btn sm">Check-out</button></form>
+          }
+          @if (s.Statut == StatutSejour.Termine && s.Folio is not null)
+          {
+            <a class="btn sm" asp-controller="Folios" asp-action="Detail" asp-route-id="@s.Folio.Id">Note</a>
+          }
+        </td>
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>

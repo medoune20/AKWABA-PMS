@@ -1,0 +1,41 @@
+@model List<Client>
+@{ ViewData["Title"] = "Clients"; }
+<div class="entete"><h1>Clients</h1></div>
+<div class="grille" style="grid-template-columns:2fr 1fr">
+  <div class="carte">
+    <form method="get" style="display:flex;gap:8px;margin-bottom:14px">
+      <input name="q" value="@ViewBag.Q" placeholder="Rechercher un nom ou téléphone…"
+             style="flex:1;padding:9px 11px;border:1px solid var(--bord);border-radius:7px;background:var(--surface);color:var(--texte)"/>
+      <button class="btn">Rechercher</button>
+    </form>
+    @if (Model.Count == 0){<div class="etat-vide">Aucun client.</div>}
+    else
+    {
+      <table class="t">
+        <thead><tr><th>Nom</th><th>Téléphone</th><th>Pièce</th></tr></thead>
+        <tbody>
+        @foreach (var c in Model)
+        {
+          <tr><td><strong>@c.NomComplet</strong><div class="aide">@c.Email</div></td>
+            <td>@c.Telephone</td><td>@c.TypePiece @c.NumPiece</td></tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+  <div class="carte">
+    <h3>Nouveau client</h3>
+    <form asp-action="Creer" method="post">
+      @Html.AntiForgeryToken()
+      <div class="champ"><label>Nom complet</label><input name="nomComplet" required/></div>
+      <div class="champ"><label>Téléphone</label><input name="telephone"/></div>
+      <div class="champ"><label>Email</label><input name="email" type="email"/></div>
+      <div class="ligne-champs">
+        <div class="champ"><label>Type pièce</label>
+          <select name="typePiece"><option value="">—</option><option>CNI</option><option>Passeport</option><option>Permis</option></select></div>
+        <div class="champ"><label>N° pièce</label><input name="numPiece"/></div>
+      </div>
+      <button class="btn primaire">Enregistrer</button>
+    </form>
+  </div>
+</div>

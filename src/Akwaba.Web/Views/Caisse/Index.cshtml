@@ -1,0 +1,71 @@
+@model SessionCaisse
+@{
+  ViewData["Title"] = "Caisse";
+  var historique = (List<SessionCaisse>)ViewBag.Historique;
+}
+<div class="entete"><h1>Caisse</h1></div>
+
+@if (Model is null)
+{
+  <div class="carte" style="max-width:420px">
+    <h3>Ouvrir une session</h3>
+    <form asp-action="Ouvrir" method="post">
+      @Html.AntiForgeryToken()
+      <div class="champ"><label>Fonds de caisse initial (FCFA)</label><input name="fonds" type="number" value="0"/></div>
+      <button class="btn primaire">Ouvrir la caisse</button>
+    </form>
+  </div>
+}
+else
+{
+  var totaux = (Dictionary<MoyenPaiement,int>)ViewBag.Totaux;
+  var totalEncaisse = totaux.Values.Sum();
+  <div class="grille" style="grid-template-columns:2fr 1fr">
+    <div class="carte">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3 style="margin:0">Session ouverte</h3>
+        <span class="badge b-vert">Ouverte par @Model.UtilisateurNom</span>
+      </div>
+      <div class="aide">Ouverte le @Model.OuverteLe.ToLocalTime().ToString("dd/MM/yyyy HH:mm") · Fonds @Fcfa.Format(Model.FondsFcfa)</div>
+      <table class="t" style="margin-top:12px">
+        <thead><tr><th>Moyen de paiement</th><th style="text-align:right">Total encaissé</th></tr></thead>
+        <tbody>
+        @foreach (var kv in totaux)
+        { <tr><td>@kv.Key</td><td style="text-align:right">@Fcfa.Format(kv.Value)</td></tr> }
+        @if (totaux.Count == 0){<tr><td colspan="2" class="etat-vide">Aucun encaissement.</td></tr>}
+        </tbody>
+        <tfoot><tr><td style="font-weight:600">Total</td>
+          <td style="text-align:right;font-weight:700">@Fcfa.Format(totalEncaisse)</td></tr></tfoot>
+      </table>
+    </div>
+    <div class="carte">
+      <h3>Clôturer</h3>
+      <form asp-action="Fermer" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Id"/>
+        <div class="champ"><label>Espèces comptées (FCFA)</label><input name="montantCompte" type="number" required/></div>
+        <div class="aide">Attendu en espèces : @Fcfa.Format(Model.FondsFcfa + (totaux.TryGetValue(MoyenPaiement.Especes, out var e)? e:0))</div>
+        <button class="btn danger" style="width:100%;justify-content:center;margin-top:10px">Clôturer la caisse</button>
+      </form>
+    </div>
+  </div>
+}
+
+@if (historique.Any())
+{
+  <div class="carte" style="margin-top:20px">
+    <h3>Historique des sessions</h3>
+    <table class="t">
+      <thead><tr><th>Caissier</th><th>Ouverture</th><th>Clôture</th><th style="text-align:right">Écart</th></tr></thead>
+      <tbody>
+      @foreach (var s in historique)
+      {
+        <tr><td>@s.UtilisateurNom</td>
+          <td>@s.OuverteLe.ToLocalTime().ToString("dd/MM HH:mm")</td>
+          <td>@s.FermeeLe?.ToLocalTime().ToString("dd/MM HH:mm")</td>
+          <td style="text-align:right;color:@((s.EcartFcfa??0)==0?"var(--vert)":"var(--rouge)")">@Fcfa.Format(s.EcartFcfa ?? 0)</td></tr>
+      }
+      </tbody>
+    </table>
+  </div>
+}

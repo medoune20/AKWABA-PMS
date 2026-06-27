@@ -1,0 +1,51 @@
+@model List<Chambre>
+@{ ViewData["Title"] = "Chambres";
+   string Badge(StatutMenage s) => s switch {
+     StatutMenage.Propre => "b-vert", StatutMenage.Sale => "b-ambre",
+     StatutMenage.EnCours => "b-bleu", _ => "b-rouge" };
+}
+<div class="entete"><h1>Chambres</h1>
+  @if (User.IsInRole("GERANT")){<a class="btn" asp-action="Types">Types &amp; Tarifs</a>}
+</div>
+
+<div class="grille" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr))">
+  @foreach (var c in Model)
+  {
+    <div class="carte">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <div><div style="font-size:22px;font-weight:700">@c.Numero</div>
+          <div class="aide">@c.TypeChambre?.Libelle · étage @c.Etage</div></div>
+        <span class="badge @Badge(c.StatutMenage)">@c.StatutMenage</span>
+      </div>
+      <form asp-action="ChangerEtatMenage" method="post" style="margin-top:12px;display:flex;gap:6px">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@c.Id"/>
+        <select name="statut" class="champ" style="margin:0;flex:1">
+          @foreach (var v in Enum.GetValues<StatutMenage>())
+          { <option value="@v" selected="@(v==c.StatutMenage)">@v</option> }
+        </select>
+        <button class="btn sm primaire">OK</button>
+      </form>
+    </div>
+  }
+</div>
+
+@if (User.IsInRole("GERANT"))
+{
+  <div class="carte" style="margin-top:20px;max-width:520px">
+    <h3>Ajouter une chambre</h3>
+    <form asp-action="CreerChambre" method="post">
+      @Html.AntiForgeryToken()
+      <div class="ligne-champs">
+        <div class="champ"><label>Numéro</label><input name="numero" required/></div>
+        <div class="champ"><label>Étage</label><input name="etage" type="number" value="1"/></div>
+      </div>
+      <div class="champ"><label>Type</label>
+        <select name="typeChambreId" required>
+          @foreach (var t in (List<TypeChambre>)ViewBag.Types){<option value="@t.Id">@t.Libelle</option>}
+        </select>
+      </div>
+      <button class="btn primaire">Ajouter</button>
+    </form>
+  </div>
+}

@@ -1,0 +1,31 @@
+@model List<Tenant>
+@{ ViewData["Title"] = "Hôtels";
+   string Badge(StatutTenant s) => s switch {
+     StatutTenant.Approuve => "b-vert", StatutTenant.EnAttente => "b-ambre",
+     StatutTenant.Suspendu => "b-rouge", _ => "b-gris" }; }
+<div class="entete"><h1>Hôtels de la plateforme</h1></div>
+<div class="carte">
+  <table class="t">
+    <thead><tr><th>Hôtel</th><th>Sous-domaine</th><th>Ville</th><th>Statut</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var t in Model)
+    {
+      <tr>
+        <td><strong>@t.Nom</strong></td>
+        <td>@t.SousDomaine</td>
+        <td>@t.Ville</td>
+        <td><span class="badge @Badge(t.Statut)">@t.Statut</span></td>
+        <td>
+          @if (t.Statut is StatutTenant.Approuve or StatutTenant.Suspendu)
+          {
+            <form asp-action="BasculerSuspension" method="post">@Html.AntiForgeryToken()
+              <input type="hidden" name="id" value="@t.Id"/>
+              <button class="btn sm @(t.Statut==StatutTenant.Suspendu?"primaire":"danger")">
+                @(t.Statut==StatutTenant.Suspendu?"Réactiver":"Suspendre")</button></form>
+          }
+        </td>
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>

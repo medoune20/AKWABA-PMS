@@ -1,0 +1,99 @@
+@model Folio
+@{
+  ViewData["Title"] = "Note de chambre";
+  string BadgePaie(StatutPaiement s) => s switch {
+    StatutPaiement.Confirme => "b-vert", StatutPaiement.EnAttente => "b-ambre", _ => "b-rouge" };
+}
+<div class="entete"><h1>Note — Chambre @Model.Sejour?.Chambre?.Numero</h1>
+  <a class="btn" asp-controller="Reservations" asp-action="Detail" asp-route-id="@Model.Sejour?.ReservationId">← Réservation</a>
+</div>
+
+<div class="grille" style="grid-template-columns:2fr 1fr">
+  <div>
+    <div class="carte" style="margin-bottom:16px">
+      <h3>Détail de la note</h3>
+      <table class="t">
+        <thead><tr><th>Libellé</th><th>Cat.</th><th>Qté</th><th style="text-align:right">Montant</th></tr></thead>
+        <tbody>
+        @foreach (var l in Model.Lignes)
+        {
+          <tr><td>@l.Libelle</td><td><span class="badge b-gris">@l.Categorie</span></td>
+            <td>@l.Quantite</td><td style="text-align:right">@Fcfa.Format(l.MontantFcfa)</td></tr>
+        }
+        </tbody>
+        <tfoot>
+          <tr><td colspan="3" style="text-align:right;font-weight:600">Total</td>
+            <td style="text-align:right;font-weight:700">@Fcfa.Format(Model.TotalFcfa)</td></tr>
+          <tr><td colspan="3" style="text-align:right">Payé</td>
+            <td style="text-align:right">@Fcfa.Format(Model.TotalPayeFcfa)</td></tr>
+          <tr><td colspan="3" style="text-align:right;font-weight:600">Reste à payer</td>
+            <td style="text-align:right;font-weight:700;color:@(Model.ResteFcfa>0?"var(--rouge)":"var(--vert)")">@Fcfa.Format(Model.ResteFcfa)</td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="carte">
+      <h3>Paiements</h3>
+      @if (!Model.Paiements.Any()){<div class="etat-vide">Aucun paiement.</div>}
+      else
+      {
+        <table class="t">
+          <thead><tr><th>Moyen</th><th>Montant</th><th>Statut</th><th></th></tr></thead>
+          <tbody>
+          @foreach (var p in Model.Paiements.OrderByDescending(x => x.CreeLe))
+          {
+            <tr><td>@p.Moyen</td><td>@Fcfa.Format(p.MontantFcfa)</td>
+              <td><span class="badge @BadgePaie(p.Statut)">@p.Statut</span></td>
+              <td>@if (p.Statut == StatutPaiement.EnAttente && p.RefExterne is not null)
+                  {<a class="btn sm" asp-action="SimulerWebhook" asp-route-ref="@p.RefExterne">Confirmer</a>}</td></tr>
+          }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+
+  <div>
+    @if (Model.Statut == StatutFolio.Ouvert)
+    {
+      <div class="carte" style="margin-bottom:16px">
+        <h3>Ajouter une ligne</h3>
+        <form asp-action="AjouterLigne" method="post">
+          @Html.AntiForgeryToken()
+          <input type="hidden" name="id" value="@Model.Id"/>
+          <div class="champ"><label>Libellé</label><input name="libelle" required placeholder="Ex. Restaurant, Minibar…"/></div>
+          <div class="ligne-champs">
+            <div class="champ"><label>Catégorie</label>
+              <select name="categorie">@foreach (var c in Enum.GetValues<CategorieLigne>()){<option value="@c">@c</option>}</select></div>
+            <div class="champ"><label>Quantité</label><input name="quantite" type="number" value="1" min="1"/></div>
+          </div>
+          <div class="champ"><label>Montant (FCFA)</label><input name="montant" type="number" required/></div>
+          <button class="btn primaire" style="width:100%;justify-content:center">Ajouter</button>
+        </form>
+      </div>
+
+      <div class="carte">
+        <h3>Encaisser</h3>
+        <form asp-action="Encaisser" method="post">
+          @Html.AntiForgeryToken()
+          <input type="hidden" name="id" value="@Model.Id"/>
+          <div class="champ"><label>Montant (FCFA)</label>
+            <input name="montant" type="number" value="@Model.ResteFcfa" required/></div>
+          <div class="champ"><label>Moyen</label>
+            <select name="moyen">
+              <option value="0">Espèces</option><option value="1">Orange Money</option>
+              <option value="2">MTN Mobile Money</option><option value="3">Wave</option>
+              <option value="4">Moov Money</option><option value="5">Carte</option>
+            </select>
+            <div class="aide">Mobile money : confirmation via webhook (bac à sable).</div>
+          </div>
+          <button class="btn primaire" style="width:100%;justify-content:center">Encaisser</button>
+        </form>
+      </div>
+    }
+    else
+    {
+      <div class="carte"><div class="badge b-vert">Note soldée</div></div>
+    }
+  </div>
+</div>

@@ -1,0 +1,21 @@
+@model List<Audit>
+@{ ViewData["Title"] = "Journal d'audit"; }
+<div class="entete"><h1>Journal d'audit</h1>
+  <span class="badge b-gris">@Model.Count dernières entrées</span></div>
+<div class="carte">
+  <table class="t">
+    <thead><tr><th>Horodatage</th><th>Utilisateur</th><th>Action</th><th>Cible</th><th>Détails</th></tr></thead>
+    <tbody>
+    @foreach (var a in Model)
+    {
+      <tr>
+        <td style="white-space:nowrap">@a.Horodatage.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</td>
+        <td>@a.UtilisateurNom</td>
+        <td><span class="badge b-bleu">@a.Action</span></td>
+        <td class="aide">@a.Cible</td>
+        <td class="aide">@a.Details</td>
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>
