@@ -14,9 +14,9 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
         var cs = config.GetConnectionString("Defaut")
-                 ?? "Host=localhost;Port=5432;Database=akwaba;Username=postgres;Password=postgres";
+                 ?? "Data Source=akwaba.db";
 
-        services.AddDbContext<AkwabaDbContext>(opt => opt.UseNpgsql(cs));
+        services.AddDbContext<AkwabaDbContext>(opt => opt.UseSqlite(cs));
         services.AddScoped<IAkwabaDbContext>(sp => sp.GetRequiredService<AkwabaDbContext>());
 
         services.AddIdentity<AppliUtilisateur, AppliRole>(opt =>

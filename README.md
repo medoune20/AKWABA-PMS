@@ -48,7 +48,8 @@ entièrement fonctionnels et sans placeholder :
 ## 2. Prérequis
 
 - **.NET 10 SDK** — https://dotnet.microsoft.com/download/dotnet/10.0
-- **PostgreSQL 14+** (un serveur local suffit)
+- **Aucune base à installer** : l'application utilise **SQLite** par défaut (un simple fichier `akwaba.db` créé automatiquement).
+- *(Optionnel, production)* **PostgreSQL 14+** — voir la section « Passer à PostgreSQL ».
 - Un IDE : Visual Studio 2022/2025, JetBrains Rider, ou VS Code + extension C# Dev Kit.
 
 > ⚠️ **La compilation doit être réalisée en local.** Le SDK .NET 10 n'était pas disponible dans
@@ -59,19 +60,15 @@ entièrement fonctionnels et sans placeholder :
 ## 3. Mise en route
 
 ### a) Base de données
-Créez la base (les tables sont créées automatiquement au premier démarrage via `EnsureCreated`) :
-
-```bash
-createdb akwaba           # ou via pgAdmin
-```
-
-Adaptez la chaîne de connexion dans `src/Akwaba.Web/appsettings.json` si nécessaire :
+Rien à installer : au premier démarrage, l'application crée automatiquement le fichier
+**`akwaba.db`** (SQLite) et y insère les données de démonstration. La chaîne par défaut
+dans `src/Akwaba.Web/appsettings.json` est :
 
 ```json
-"ConnectionStrings": {
-  "Defaut": "Host=localhost;Port=5432;Database=akwaba;Username=postgres;Password=postgres"
-}
+"ConnectionStrings": { "Defaut": "Data Source=akwaba.db" }
 ```
+
+> Pour repartir d'une base vierge, supprimez simplement `akwaba.db` et relancez.
 
 ### b) Restauration et lancement
 
@@ -145,6 +142,17 @@ La couche Application ne connaît jamais l'Infrastructure (inversion via `IAkwab
 - Les comptes plateforme ont `EstPlateforme = true` (bypass) pour la modération.
 
 ---
+
+## 6 bis. Passer à PostgreSQL (production)
+
+Le choix du fournisseur est isolé dans une seule ligne. Pour PostgreSQL :
+
+1. Dans `src/Akwaba.Infrastructure/Akwaba.Infrastructure.csproj`, remplacez
+   `Microsoft.EntityFrameworkCore.Sqlite` par `Npgsql.EntityFrameworkCore.PostgreSQL` (même version).
+2. Dans `src/Akwaba.Infrastructure/DependencyInjection.cs`, remplacez `opt.UseSqlite(cs)` par `opt.UseNpgsql(cs)`.
+3. Dans `appsettings.json`, mettez la chaîne :
+   `"Defaut": "Host=localhost;Port=5432;Database=akwaba;Username=postgres;Password=VOTRE_MDP"`.
+4. Créez la base `akwaba` puis lancez. (Le code métier ne change pas.)
 
 ## 7. Notes de production
 

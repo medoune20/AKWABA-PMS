@@ -57,7 +57,7 @@ public class AkwabaDbContext(DbContextOptions<AkwabaDbContext> options, ITenantC
         b.Entity<Tenant>().HasIndex(e => e.SousDomaine).IsUnique();
         b.Entity<Chambre>().HasIndex(e => new { e.TenantId, e.Numero }).IsUnique();
         b.Entity<Paiement>().HasIndex(e => new { e.TenantId, e.RefExterne }).IsUnique()
-            .HasFilter("\"RefExterne\" IS NOT NULL");
+            .HasFilter("RefExterne IS NOT NULL");
 
         // ---- Relations clés ----
         b.Entity<Sejour>().HasOne(s => s.Folio).WithOne(f => f.Sejour!).HasForeignKey<Folio>(f => f.SejourId);
