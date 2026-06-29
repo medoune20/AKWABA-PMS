@@ -4,6 +4,8 @@ using Akwaba.Infrastructure;
 using Akwaba.Infrastructure.Persistence;
 using Akwaba.Web.Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +52,17 @@ if (!string.IsNullOrWhiteSpace(googleId) && !string.IsNullOrWhiteSpace(googleSec
 
 builder.Services.AddControllersWithViews();
 
+// Production : persistance des clés (cookies stables après redémarrage) + reverse proxy
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "keys")));
+builder.Services.Configure<ForwardedHeadersOptions>(o =>
+{
+    o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 if (!app.Environment.IsDevelopment())
 {

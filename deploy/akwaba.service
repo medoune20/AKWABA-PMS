@@ -1,0 +1,18 @@
+[Unit]
+Description=AKWABA PMS (ASP.NET Core)
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/lp2m
+ExecStart=/usr/bin/dotnet /opt/lp2m/Akwaba.Web.dll
+Restart=always
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=akwaba
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://127.0.0.1:5000
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+[Install]
+WantedBy=multi-user.target
