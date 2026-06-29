@@ -23,3 +23,6 @@ public enum MoyenPaiement { Especes = 0, OrangeMoney = 1, MtnMomo = 2, Wave = 3,
 
 /// <summary>État d'un paiement.</summary>
 public enum StatutPaiement { EnAttente = 0, Confirme = 1, Echec = 2, Expire = 3 }
+
+/// <summary>État d'une commande restaurant/bar.</summary>
+public enum StatutCommande { Ouverte = 0, EnvoyeeSurNote = 1, Payee = 2, Annulee = 3 }

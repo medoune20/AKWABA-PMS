@@ -1,0 +1,55 @@
+@{
+  ViewData["Title"] = "Housekeeping";
+  var chambres = (List<Chambre>)ViewBag.Chambres;
+  var taches = (Dictionary<Guid, TacheMenage>)ViewBag.Taches;
+  var personnel = (List<(Guid Id, string Nom)>)ViewBag.Personnel;
+  string Badge(StatutMenage s) => s switch {
+    StatutMenage.Propre => "b-vert", StatutMenage.Sale => "b-ambre",
+    StatutMenage.EnCours => "b-bleu", _ => "b-rouge" };
+  var parEtage = chambres.GroupBy(c => c.Etage).OrderBy(g => g.Key);
+}
+<div class="entete"><h1>Housekeeping</h1>
+  <div>
+    <span class="badge b-vert">Propre</span> <span class="badge b-ambre">Sale</span>
+    <span class="badge b-bleu">En cours</span> <span class="badge b-rouge">Hors service</span>
+  </div>
+</div>
+
+@foreach (var etage in parEtage)
+{
+  <h3 style="margin-top:18px">Étage @etage.Key</h3>
+  <div class="grille" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
+    @foreach (var c in etage)
+    {
+      taches.TryGetValue(c.Id, out var t);
+      <div class="carte">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div style="font-size:20px;font-weight:700">@c.Numero</div>
+          <span class="badge @Badge(c.StatutMenage)">@c.StatutMenage</span>
+        </div>
+        <div class="aide">@c.TypeChambre?.Libelle</div>
+        @if (t?.AssigneeNom is not null){<div class="aide" style="margin-top:4px">👤 @t.AssigneeNom</div>}
+
+        <form asp-action="Marquer" method="post" style="margin-top:10px;display:flex;gap:6px">
+          @Html.AntiForgeryToken()
+          <input type="hidden" name="chambreId" value="@c.Id"/>
+          <select name="statut" class="champ" style="margin:0;flex:1">
+            @foreach (var v in Enum.GetValues<StatutMenage>()){<option value="@v" selected="@(v==c.StatutMenage)">@v</option>}
+          </select>
+          <button class="btn sm primaire">OK</button>
+        </form>
+
+        <form asp-action="Assigner" method="post" style="margin-top:6px;display:flex;gap:6px">
+          @Html.AntiForgeryToken()
+          <input type="hidden" name="chambreId" value="@c.Id"/>
+          <select name="assigneeId" class="champ" style="margin:0;flex:1"
+                  onchange="this.nextElementSibling.value=this.options[this.selectedIndex].text">
+            @foreach (var p in personnel){<option value="@p.Id">@p.Nom</option>}
+          </select>
+          <input type="hidden" name="nom" value="@(personnel.FirstOrDefault().Nom)"/>
+          <button class="btn sm">Assigner</button>
+        </form>
+      </div>
+    }
+  </div>
+}

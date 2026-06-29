@@ -24,6 +24,10 @@ builder.Services.AddScoped<ServiceFolio>();
 builder.Services.AddScoped<ServiceCaisse>();
 builder.Services.AddScoped<ServiceTableauBord>();
 builder.Services.AddScoped<ServiceTenant>();
+builder.Services.AddScoped<ServicePos>();
+builder.Services.AddScoped<ServiceHousekeeping>();
+builder.Services.AddScoped<ServiceImport>();
+builder.Services.AddScoped<ServiceRapports>();
 
 // Cookies & redirection de connexion
 builder.Services.ConfigureApplicationCookie(opt =>

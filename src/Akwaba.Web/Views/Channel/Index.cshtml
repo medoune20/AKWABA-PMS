@@ -1,0 +1,37 @@
+@{
+  ViewData["Title"] = "Channel Manager";
+  var res = ViewBag.Resultat as Akwaba.Application.Services.ResultatImport;
+}
+<div class="entete"><h1>Channel Manager — Import OTA</h1></div>
+
+<div class="grille" style="grid-template-columns:1fr 1fr">
+  <div class="carte">
+    <h3>Importer des réservations</h3>
+    <p class="aide">Format CSV attendu (point-virgule) :<br/>
+      <code>client;telephone;chambre;arrivee;depart;canal</code><br/>
+      dates au format <code>aaaa-mm-jj</code>. La première ligne d'en-tête est ignorée.</p>
+    <form asp-action="Importer" method="post" enctype="multipart/form-data">
+      @Html.AntiForgeryToken()
+      <div class="champ"><label>Fichier CSV</label><input type="file" name="fichier" accept=".csv,text/csv"/></div>
+      <div class="champ"><label>…ou coller les lignes</label>
+        <textarea name="colle" rows="6" placeholder="Konan Yao;+22507...;101;2026-07-01;2026-07-03;BOOKING"></textarea></div>
+      <button class="btn primaire">Importer</button>
+    </form>
+  </div>
+
+  <div class="carte">
+    <h3>Résultat</h3>
+    @if (res is null){<div class="etat-vide">Aucun import lancé.</div>}
+    else
+    {
+      <div class="alerte ok">@res.Crees réservation(s) créée(s).</div>
+      @if (res.Ignores > 0){<div class="alerte ko">@res.Ignores ligne(s) ignorée(s).</div>}
+      @if (res.Erreurs.Any())
+      {
+        <table class="t"><thead><tr><th>Détails</th></tr></thead><tbody>
+        @foreach (var e in res.Erreurs){<tr><td class="aide">@e</td></tr>}
+        </tbody></table>
+      }
+    }
+  </div>
+</div>

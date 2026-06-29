@@ -19,6 +19,11 @@ public interface IAkwabaDbContext
     DbSet<Paiement> Paiements { get; }
     DbSet<SessionCaisse> SessionsCaisse { get; }
     DbSet<DonneeReference> DonneesReference { get; }
+    DbSet<CategorieProduit> CategoriesProduit { get; }
+    DbSet<Produit> Produits { get; }
+    DbSet<Commande> Commandes { get; }
+    DbSet<LigneCommande> LignesCommande { get; }
+    DbSet<TacheMenage> TachesMenage { get; }
 
     Task<int> SaveChangesAsync(CancellationToken ct = default);
 

@@ -83,6 +83,21 @@ public static class SeedData
                 new Client { TenantId = tenant.Id, NomComplet = "Konan Yao", Telephone = "+225 07 07 07 07 07", TypePiece = "CNI", NumPiece = "CI00123" },
                 new Client { TenantId = tenant.Id, NomComplet = "Aïcha Traoré", Telephone = "+225 05 05 05 05 05", TypePiece = "Passeport", NumPiece = "20PA98765" });
 
+            // Carte restaurant / bar (démo)
+            var cBoissons = new CategorieProduit { TenantId = tenant.Id, Libelle = "Boissons", Ordre = 1 };
+            var cPlats = new CategorieProduit { TenantId = tenant.Id, Libelle = "Plats", Ordre = 2 };
+            var cDesserts = new CategorieProduit { TenantId = tenant.Id, Libelle = "Desserts", Ordre = 3 };
+            db.CategoriesProduit.AddRange(cBoissons, cPlats, cDesserts);
+            db.Produits.AddRange(
+                new Produit { TenantId = tenant.Id, CategorieProduitId = cBoissons.Id, Libelle = "Eau minérale", PrixFcfa = 1000 },
+                new Produit { TenantId = tenant.Id, CategorieProduitId = cBoissons.Id, Libelle = "Jus de bissap", PrixFcfa = 1500 },
+                new Produit { TenantId = tenant.Id, CategorieProduitId = cBoissons.Id, Libelle = "Bière locale", PrixFcfa = 2000 },
+                new Produit { TenantId = tenant.Id, CategorieProduitId = cPlats.Id, Libelle = "Poulet braisé", PrixFcfa = 5000 },
+                new Produit { TenantId = tenant.Id, CategorieProduitId = cPlats.Id, Libelle = "Attiéké poisson", PrixFcfa = 4000 },
+                new Produit { TenantId = tenant.Id, CategorieProduitId = cPlats.Id, Libelle = "Riz sauce arachide", PrixFcfa = 3500 },
+                new Produit { TenantId = tenant.Id, CategorieProduitId = cDesserts.Id, Libelle = "Salade de fruits", PrixFcfa = 2000 },
+                new Produit { TenantId = tenant.Id, CategorieProduitId = cDesserts.Id, Libelle = "Dégué", PrixFcfa = 1500 });
+
             await db.SaveChangesAsync();
 
             await CreerUtilisateur(userMgr, "gerant@ivoire-palace.ci", "Akwaba#2026", "Gérant Ivoire Palace", tenant.Id, "GERANT");

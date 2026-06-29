@@ -1,0 +1,39 @@
+@{
+  ViewData["Title"] = "Rapports";
+  var du = (DateOnly)ViewBag.Du; var au = (DateOnly)ViewBag.Au;
+  var revenus = (List<Akwaba.Application.Services.LigneRevenu>)ViewBag.Revenus;
+  var moyens = (List<Akwaba.Application.Services.RevenuParMoyen>)ViewBag.Moyens;
+  var caTotal = (long)ViewBag.CaTotal;
+}
+<div class="entete"><h1>Rapports &amp; Comptabilité</h1>
+  <a class="btn" asp-action="ExportCsv" asp-route-du="@du.ToString("yyyy-MM-dd")" asp-route-au="@au.ToString("yyyy-MM-dd")">Exporter CSV</a>
+</div>
+
+<div class="carte" style="margin-bottom:16px">
+  <form method="get" style="display:flex;gap:10px;align-items:end;flex-wrap:wrap">
+    <div class="champ" style="margin:0"><label>Du</label><input name="du" type="date" value="@du.ToString("yyyy-MM-dd")"/></div>
+    <div class="champ" style="margin:0"><label>Au</label><input name="au" type="date" value="@au.ToString("yyyy-MM-dd")"/></div>
+    <button class="btn primaire">Actualiser</button>
+  </form>
+</div>
+
+<div class="kpi"><div class="carte"><div class="l">Chiffre d'affaires encaissé</div>
+  <div class="v" style="font-size:22px">@Fcfa.Format(caTotal)</div>
+  <div class="sub">du @du.ToString("dd/MM/yyyy") au @au.ToString("dd/MM/yyyy")</div></div></div>
+
+<div class="grille" style="grid-template-columns:1fr 1fr">
+  <div class="carte">
+    <h3>Revenus par catégorie</h3>
+    <table class="t"><thead><tr><th>Catégorie</th><th style="text-align:right">Montant</th></tr></thead><tbody>
+    @foreach (var r in revenus){<tr><td>@r.Categorie</td><td style="text-align:right">@Fcfa.Format(r.MontantFcfa)</td></tr>}
+    @if (!revenus.Any()){<tr><td colspan="2" class="etat-vide">Aucune donnée.</td></tr>}
+    </tbody></table>
+  </div>
+  <div class="carte">
+    <h3>Encaissements par moyen</h3>
+    <table class="t"><thead><tr><th>Moyen</th><th style="text-align:right">Montant</th></tr></thead><tbody>
+    @foreach (var m in moyens){<tr><td>@m.Moyen</td><td style="text-align:right">@Fcfa.Format(m.MontantFcfa)</td></tr>}
+    @if (!moyens.Any()){<tr><td colspan="2" class="etat-vide">Aucune donnée.</td></tr>}
+    </tbody></table>
+  </div>
+</div>

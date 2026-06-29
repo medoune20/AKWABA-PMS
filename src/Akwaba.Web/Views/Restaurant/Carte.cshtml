@@ -1,0 +1,37 @@
+@model List<Produit>
+@{ ViewData["Title"] = "Carte"; var cats = (List<CategorieProduit>)ViewBag.Categories; }
+<div class="entete"><h1>Carte restaurant / bar</h1><a class="btn" asp-action="Index">← POS</a></div>
+<div class="grille" style="grid-template-columns:2fr 1fr">
+  <div class="carte">
+    <h3>Produits</h3>
+    <table class="t">
+      <thead><tr><th>Produit</th><th>Catégorie</th><th style="text-align:right">Prix</th></tr></thead>
+      <tbody>
+      @foreach (var p in Model)
+      { <tr><td><strong>@p.Libelle</strong></td><td>@p.Categorie?.Libelle</td>
+          <td style="text-align:right">@Fcfa.Format(p.PrixFcfa)</td></tr> }
+      @if (!Model.Any()){<tr><td colspan="3" class="etat-vide">Aucun produit.</td></tr>}
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <div class="carte" style="margin-bottom:16px">
+      <h3>Nouvelle catégorie</h3>
+      <form asp-action="CreerCategorie" method="post">@Html.AntiForgeryToken()
+        <div class="champ"><label>Libellé</label><input name="libelle" required/></div>
+        <div class="champ"><label>Ordre</label><input name="ordre" type="number" value="1"/></div>
+        <button class="btn primaire">Créer</button></form>
+    </div>
+    <div class="carte">
+      <h3>Nouveau produit</h3>
+      <form asp-action="CreerProduit" method="post">@Html.AntiForgeryToken()
+        <div class="champ"><label>Catégorie</label>
+          <select name="categorieProduitId" required>
+            @foreach (var c in cats){<option value="@c.Id">@c.Libelle</option>}
+          </select></div>
+        <div class="champ"><label>Libellé</label><input name="libelle" required/></div>
+        <div class="champ"><label>Prix (FCFA)</label><input name="prix" type="number" required/></div>
+        <button class="btn primaire">Ajouter</button></form>
+    </div>
+  </div>
+</div>

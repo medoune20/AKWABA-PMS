@@ -1,0 +1,128 @@
+@{
+  ViewData["Title"] = "Restaurant / Bar";
+  var ouvertes = (List<Commande>)ViewBag.Ouvertes;
+  var carte = (List<CategorieProduit>)ViewBag.Carte;
+  var sejours = (List<Sejour>)ViewBag.SejoursEnCours;
+  var cmd = ViewBag.Commande as Commande;
+}
+<div class="entete"><h1>Restaurant / Bar</h1>
+  @if (User.IsInRole("GERANT")){<a class="btn" asp-action="Carte">Gérer la carte</a>}
+</div>
+
+<div class="grille" style="grid-template-columns:1fr 360px">
+  <div>
+    <div class="carte" style="margin-bottom:16px">
+      <h3>Nouvelle commande</h3>
+      <form asp-action="Creer" method="post" style="display:flex;gap:8px;flex-wrap:wrap;align-items:end">
+        @Html.AntiForgeryToken()
+        <div class="champ" style="margin:0;flex:1;min-width:140px">
+          <label>Table (optionnel)</label><input name="table" placeholder="Ex. T4"/>
+        </div>
+        <div class="champ" style="margin:0;flex:1;min-width:180px">
+          <label>Imputer à une chambre</label>
+          <select name="sejourId">
+            <option value="">— Vente directe —</option>
+            @foreach (var s in sejours)
+            { <option value="@s.Id">Ch. @s.Chambre?.Numero — @s.Reservation?.Client?.NomComplet</option> }
+          </select>
+        </div>
+        <button class="btn primaire">Ouvrir</button>
+      </form>
+    </div>
+
+    @if (cmd is not null)
+    {
+      <div class="carte">
+        <h3>Carte — commande #@cmd.Numero</h3>
+        @foreach (var c in carte)
+        {
+          <div class="aide" style="margin:10px 0 6px;font-weight:600">@c.Libelle</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            @foreach (var p in c.Produits)
+            {
+              <form asp-action="Ajouter" method="post" style="margin:0">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="commandeId" value="@cmd.Id"/>
+                <input type="hidden" name="produitId" value="@p.Id"/>
+                <button class="btn" style="flex-direction:column;align-items:flex-start;min-width:130px">
+                  <span>@p.Libelle</span><span class="aide">@Fcfa.Format(p.PrixFcfa)</span>
+                </button>
+              </form>
+            }
+          </div>
+        }
+      </div>
+    }
+    else
+    {
+      <div class="carte"><div class="etat-vide">Ouvrez ou sélectionnez une commande pour ajouter des produits.</div></div>
+    }
+  </div>
+
+  <div>
+    @if (cmd is not null)
+    {
+      <div class="carte" style="margin-bottom:16px">
+        <h3>Commande #@cmd.Numero</h3>
+        <div class="aide">@(cmd.Table is not null ? "Table " + cmd.Table : cmd.SejourId is not null ? "Imputée chambre " + cmd.Sejour?.Chambre?.Numero : "Vente directe")</div>
+        <table class="t" style="margin-top:10px">
+          <tbody>
+          @foreach (var l in cmd.Lignes)
+          {
+            <tr>
+              <td>@l.Libelle<div class="aide">@Fcfa.Format(l.PrixUnitaireFcfa)</div></td>
+              <td style="white-space:nowrap">
+                <form asp-action="Quantite" method="post" style="display:inline">@Html.AntiForgeryToken()
+                  <input type="hidden" name="ligneId" value="@l.Id"/><input type="hidden" name="commandeId" value="@cmd.Id"/>
+                  <input type="hidden" name="delta" value="-1"/><button class="btn sm">−</button></form>
+                <strong style="margin:0 6px">@l.Quantite</strong>
+                <form asp-action="Quantite" method="post" style="display:inline">@Html.AntiForgeryToken()
+                  <input type="hidden" name="ligneId" value="@l.Id"/><input type="hidden" name="commandeId" value="@cmd.Id"/>
+                  <input type="hidden" name="delta" value="1"/><button class="btn sm">+</button></form>
+              </td>
+              <td style="text-align:right">@Fcfa.Format(l.MontantFcfa)</td>
+            </tr>
+          }
+          @if (!cmd.Lignes.Any()){<tr><td colspan="3" class="etat-vide">Commande vide.</td></tr>}
+          </tbody>
+          <tfoot><tr><td colspan="2" style="font-weight:600">Total</td>
+            <td style="text-align:right;font-weight:700">@Fcfa.Format(cmd.TotalFcfa)</td></tr></tfoot>
+        </table>
+
+        @if (cmd.Lignes.Any())
+        {
+          @if (cmd.SejourId is not null)
+          {
+            <form asp-action="EnvoyerNote" method="post" style="margin-top:10px">@Html.AntiForgeryToken()
+              <input type="hidden" name="commandeId" value="@cmd.Id"/>
+              <button class="btn primaire" style="width:100%;justify-content:center">Imputer sur la note de la chambre</button></form>
+          }
+          <form asp-action="Encaisser" method="post" style="margin-top:10px">@Html.AntiForgeryToken()
+            <input type="hidden" name="commandeId" value="@cmd.Id"/>
+            <div class="champ"><label>Encaissement direct</label>
+              <select name="moyen">
+                <option value="0">Espèces</option><option value="1">Orange Money</option>
+                <option value="2">MTN Mobile Money</option><option value="3">Wave</option>
+                <option value="4">Moov Money</option><option value="5">Carte</option>
+              </select></div>
+            <button class="btn" style="width:100%;justify-content:center">Encaisser la commande</button></form>
+        }
+      </div>
+    }
+
+    <div class="carte">
+      <h3>Commandes ouvertes (@ouvertes.Count)</h3>
+      @if (!ouvertes.Any()){<div class="etat-vide">Aucune.</div>}
+      else
+      {
+        @foreach (var o in ouvertes)
+        {
+          <a class="btn sm" style="display:flex;justify-content:space-between;margin-bottom:6px"
+             asp-action="Index" asp-route-commande="@o.Id">
+            <span>#@o.Numero @(o.Table is not null ? "· " + o.Table : "")</span>
+            <span>@Fcfa.Format(o.TotalFcfa)</span></a>
+        }
+      }
+    </div>
+  </div>
+</div>

@@ -38,10 +38,15 @@
         <a class="@(Actif("Chambres")?"actif":"")" asp-controller="Chambres" asp-action="Index">🛏️ Chambres</a>
         <a class="@(Actif("Clients")?"actif":"")" asp-controller="Clients" asp-action="Index">👤 Clients</a>
         <a class="@(Actif("Caisse")?"actif":"")" asp-controller="Caisse" asp-action="Index">💵 Caisse</a>
+        <a class="@(Actif("Restaurant")?"actif":"")" asp-controller="Restaurant" asp-action="Index">🍽️ Restaurant / Bar</a>
+        <a class="@(Actif("Menage")?"actif":"")" asp-controller="Menage" asp-action="Index">🧹 Housekeeping</a>
+        <a class="@(Actif("Channel")?"actif":"")" asp-controller="Channel" asp-action="Index">🔗 Channel Manager</a>
         @if (User.IsInRole("GERANT"))
         {
           <div class="titre">Administration</div>
           <a asp-controller="Chambres" asp-action="Types">🏷️ Types &amp; Tarifs</a>
+          <a asp-controller="Restaurant" asp-action="Carte">📋 Carte resto</a>
+          <a class="@(Actif("Rapports")?"actif":"")" asp-controller="Rapports" asp-action="Index">📈 Rapports</a>
           <a class="@(Actif("Parametres")?"actif":"")" asp-controller="Parametres" asp-action="Index">⚙️ Paramètres</a>
         }
       }

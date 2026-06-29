@@ -32,6 +32,11 @@ public class AkwabaDbContext(DbContextOptions<AkwabaDbContext> options, ITenantC
     public DbSet<Paiement> Paiements => Set<Paiement>();
     public DbSet<SessionCaisse> SessionsCaisse => Set<SessionCaisse>();
     public DbSet<DonneeReference> DonneesReference => Set<DonneeReference>();
+    public DbSet<CategorieProduit> CategoriesProduit => Set<CategorieProduit>();
+    public DbSet<Produit> Produits => Set<Produit>();
+    public DbSet<Commande> Commandes => Set<Commande>();
+    public DbSet<LigneCommande> LignesCommande => Set<LigneCommande>();
+    public DbSet<TacheMenage> TachesMenage => Set<TacheMenage>();
     public DbSet<Audit> Audits => Set<Audit>();
 
     protected override void OnModelCreating(ModelBuilder b)
@@ -50,6 +55,11 @@ public class AkwabaDbContext(DbContextOptions<AkwabaDbContext> options, ITenantC
         b.Entity<LigneFolio>().HasQueryFilter(e => BypassTenant || e.TenantId == TenantIdCourant);
         b.Entity<Paiement>().HasQueryFilter(e => BypassTenant || e.TenantId == TenantIdCourant);
         b.Entity<SessionCaisse>().HasQueryFilter(e => BypassTenant || e.TenantId == TenantIdCourant);
+        b.Entity<CategorieProduit>().HasQueryFilter(e => BypassTenant || e.TenantId == TenantIdCourant);
+        b.Entity<Produit>().HasQueryFilter(e => BypassTenant || e.TenantId == TenantIdCourant);
+        b.Entity<Commande>().HasQueryFilter(e => BypassTenant || e.TenantId == TenantIdCourant);
+        b.Entity<LigneCommande>().HasQueryFilter(e => BypassTenant || e.TenantId == TenantIdCourant);
+        b.Entity<TacheMenage>().HasQueryFilter(e => BypassTenant || e.TenantId == TenantIdCourant);
 
         // ---- Index TenantId (performance par hôtel) ----
         b.Entity<Chambre>().HasIndex(e => e.TenantId);
