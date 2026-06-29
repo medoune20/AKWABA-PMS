@@ -8,7 +8,7 @@
 <div class="grille" style="grid-template-columns:1fr 1fr">
   <div class="carte">
     <h3>@tenant.Nom</h3>
-    <div class="aide">@tenant.SousDomaine.akwaba.ci · @tenant.Ville</div>
+    <div class="aide">@(tenant.SousDomaine).akwaba.ci · @tenant.Ville</div>
     <form asp-action="EnregistrerHoraires" method="post" style="margin-top:14px">
       @Html.AntiForgeryToken()
       <div class="ligne-champs">

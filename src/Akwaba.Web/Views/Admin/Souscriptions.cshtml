@@ -11,7 +11,7 @@ else
   {
     <div class="carte">
       <h3 style="margin-bottom:2px">@t.Nom</h3>
-      <div class="aide">@t.SousDomaine.akwaba.ci · @t.Ville</div>
+      <div class="aide">@(t.SousDomaine).akwaba.ci · @t.Ville</div>
       <div style="margin:10px 0;font-size:13px">
         <div>📞 @t.Telephone</div>
         <div class="aide">Demandé le @t.CreeLe.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>

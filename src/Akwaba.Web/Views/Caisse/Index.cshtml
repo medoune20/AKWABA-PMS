@@ -20,6 +20,7 @@ else
 {
   var totaux = (Dictionary<MoyenPaiement,int>)ViewBag.Totaux;
   var totalEncaisse = totaux.Values.Sum();
+  var especesAttendues = Model.FondsFcfa + (totaux.TryGetValue(MoyenPaiement.Especes, out var espConfirmees) ? espConfirmees : 0);
   <div class="grille" style="grid-template-columns:2fr 1fr">
     <div class="carte">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -44,7 +45,7 @@ else
         @Html.AntiForgeryToken()
         <input type="hidden" name="id" value="@Model.Id"/>
         <div class="champ"><label>Espèces comptées (FCFA)</label><input name="montantCompte" type="number" required/></div>
-        <div class="aide">Attendu en espèces : @Fcfa.Format(Model.FondsFcfa + (totaux.TryGetValue(MoyenPaiement.Especes, out var e)? e:0))</div>
+        <div class="aide">Attendu en espèces : @Fcfa.Format(especesAttendues)</div>
         <button class="btn danger" style="width:100%;justify-content:center;margin-top:10px">Clôturer la caisse</button>
       </form>
     </div>
