@@ -1,5 +1,6 @@
 using Akwaba.Application.Services;
 using Akwaba.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
