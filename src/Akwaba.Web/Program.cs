@@ -39,6 +39,10 @@ builder.Services.ConfigureApplicationCookie(opt =>
     opt.ExpireTimeSpan = TimeSpan.FromHours(8);
     opt.SlidingExpiration = true;
     opt.Cookie.SameSite = SameSiteMode.Lax;
+    // Cookie isolé des autres applications du même domaine (lp2medoune.com)
+    opt.Cookie.Name = ".Akwaba.Auth";
+    var pb = builder.Configuration["PathBase"];
+    if (!string.IsNullOrWhiteSpace(pb)) opt.Cookie.Path = pb;
 });
 
 // SSO Google (activé seulement si configuré)
@@ -63,6 +67,11 @@ builder.Services.Configure<ForwardedHeadersOptions>(o =>
 var app = builder.Build();
 
 app.UseForwardedHeaders();
+
+// Préfixe d'URL optionnel (déploiement derrière un reverse proxy sous /gestionhotel par ex.)
+var pathBase = builder.Configuration["PathBase"];
+if (!string.IsNullOrWhiteSpace(pathBase))
+    app.UsePathBase(pathBase);
 
 if (!app.Environment.IsDevelopment())
 {
