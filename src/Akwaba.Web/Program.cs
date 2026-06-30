@@ -41,7 +41,7 @@ builder.Services.ConfigureApplicationCookie(opt =>
     opt.Cookie.SameSite = SameSiteMode.Lax;
     // Cookie isolé des autres applications du même domaine (lp2medoune.com)
     opt.Cookie.Name = ".Akwaba.Auth";
-    var pb = builder.Configuration["PathBase"];
+    var pb = builder.Configuration["PATH_BASE"] ?? builder.Configuration["PathBase"];
     if (!string.IsNullOrWhiteSpace(pb)) opt.Cookie.Path = pb;
 });
 
@@ -69,7 +69,7 @@ var app = builder.Build();
 app.UseForwardedHeaders();
 
 // Préfixe d'URL optionnel (déploiement derrière un reverse proxy sous /gestionhotel par ex.)
-var pathBase = builder.Configuration["PathBase"];
+var pathBase = builder.Configuration["PATH_BASE"] ?? builder.Configuration["PathBase"];
 if (!string.IsNullOrWhiteSpace(pathBase))
     app.UsePathBase(pathBase);
 

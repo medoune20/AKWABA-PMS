@@ -1,3 +1,4 @@
+using System.IO;
 using Akwaba.Application.Interfaces;
 using Akwaba.Domain.Interfaces;
 using Akwaba.Infrastructure.Persistence;
@@ -13,8 +14,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
+        // Convention LP2M : DATA_DIR pointe le dossier persistant (volume Docker).
+        var dataDir = config["DATA_DIR"];
         var cs = config.GetConnectionString("Defaut")
-                 ?? "Data Source=akwaba.db";
+                 ?? (string.IsNullOrWhiteSpace(dataDir)
+                        ? "Data Source=akwaba.db"
+                        : $"Data Source={Path.Combine(dataDir, "akwaba.db")}");
 
         services.AddDbContext<AkwabaDbContext>(opt => opt.UseSqlite(cs));
         services.AddScoped<IAkwabaDbContext>(sp => sp.GetRequiredService<AkwabaDbContext>());
