@@ -12,4 +12,7 @@ public abstract class EntiteBase
     public Guid TenantId { get; set; }
 
     public DateTime CreeLe { get; set; } = DateTime.UtcNow;
+
+    /// <summary>Horodatage UTC de dernière modification (curseur de synchronisation delta).</summary>
+    public DateTime ModifieLe { get; set; } = DateTime.UtcNow;
 }

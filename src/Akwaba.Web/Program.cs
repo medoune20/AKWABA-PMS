@@ -4,7 +4,9 @@ using Akwaba.Infrastructure;
 using Akwaba.Infrastructure.Persistence;
 using Akwaba.Web.Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Text;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 
@@ -30,6 +32,7 @@ builder.Services.AddScoped<ServicePos>();
 builder.Services.AddScoped<ServiceHousekeeping>();
 builder.Services.AddScoped<ServiceImport>();
 builder.Services.AddScoped<ServiceRapports>();
+builder.Services.AddScoped<Akwaba.Web.Infrastructure.ServiceJeton>();
 
 // Cookies & redirection de connexion
 builder.Services.ConfigureApplicationCookie(opt =>
@@ -52,6 +55,27 @@ var googleSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 if (!string.IsNullOrWhiteSpace(googleId) && !string.IsNullOrWhiteSpace(googleSecret))
 {
     authBuilder.AddGoogle(o => { o.ClientId = googleId; o.ClientSecret = googleSecret; });
+}
+
+// JWT Bearer pour l'API de synchronisation (client bureau)
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (!string.IsNullOrWhiteSpace(jwtKey))
+{
+    authBuilder.AddJwtBearer("Bearer", o =>
+    {
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ValidateLifetime = true,
+            RoleClaimType = System.Security.Claims.ClaimTypes.Role,
+            NameClaimType = System.Security.Claims.ClaimTypes.NameIdentifier
+        };
+    });
 }
 
 builder.Services.AddControllersWithViews();

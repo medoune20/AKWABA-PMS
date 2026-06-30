@@ -83,6 +83,10 @@ public class AkwabaDbContext(DbContextOptions<AkwabaDbContext> options, ITenantC
                 if (entree.State == EntityState.Added && entree.Entity.TenantId == Guid.Empty)
                     entree.Entity.TenantId = tid;
         }
+        // Horodatage de modification pour la synchronisation delta
+        foreach (var entree in ChangeTracker.Entries<EntiteBase>())
+            if (entree.State is EntityState.Added or EntityState.Modified)
+                entree.Entity.ModifieLe = DateTime.UtcNow;
         return await base.SaveChangesAsync(ct);
     }
 

@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akwaba.Infrastructure", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akwaba.Web", "src\Akwaba.Web\Akwaba.Web.csproj", "{A45DCEFE-C076-4DAF-8A1C-237AF85B358F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akwaba.Sync", "src\\Akwaba.Sync\\Akwaba.Sync.csproj", "{C1CBC07D-9A2E-46D5-89B6-E468D1416D2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,5 +34,9 @@ Global
 		{A45DCEFE-C076-4DAF-8A1C-237AF85B358F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A45DCEFE-C076-4DAF-8A1C-237AF85B358F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A45DCEFE-C076-4DAF-8A1C-237AF85B358F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1CBC07D-9A2E-46D5-89B6-E468D1416D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1CBC07D-9A2E-46D5-89B6-E468D1416D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1CBC07D-9A2E-46D5-89B6-E468D1416D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1CBC07D-9A2E-46D5-89B6-E468D1416D2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
