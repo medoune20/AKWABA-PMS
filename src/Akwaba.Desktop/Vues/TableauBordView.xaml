@@ -1,0 +1,35 @@
+<UserControl x:Class="Akwaba.Desktop.Vues.TableauBordView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <TextBlock Text="Tableau de bord" FontSize="20" FontWeight="Bold" Foreground="{StaticResource Texte}" Margin="0,0,0,16"/>
+        <UniformGrid Rows="1" Columns="4">
+            <Border Background="{StaticResource Carte}" CornerRadius="12" Padding="18" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="Occupation" Foreground="{StaticResource TexteGris}"/>
+                    <TextBlock Text="{Binding TauxOccupation}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource Accent}"/>
+                </StackPanel>
+            </Border>
+            <Border Background="{StaticResource Carte}" CornerRadius="12" Padding="18" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="Chambres occupées" Foreground="{StaticResource TexteGris}"/>
+                    <TextBlock FontSize="28" FontWeight="Bold" Foreground="{StaticResource Texte}">
+                        <Run Text="{Binding NbOccupees, Mode=OneWay}"/><Run Text=" / "/><Run Text="{Binding NbChambres, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <Border Background="{StaticResource Carte}" CornerRadius="12" Padding="18" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="Arrivées du jour" Foreground="{StaticResource TexteGris}"/>
+                    <TextBlock Text="{Binding NbArrivees}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource Texte}"/>
+                </StackPanel>
+            </Border>
+            <Border Background="{StaticResource Carte}" CornerRadius="12" Padding="18">
+                <StackPanel>
+                    <TextBlock Text="Départs du jour" Foreground="{StaticResource TexteGris}"/>
+                    <TextBlock Text="{Binding NbDeparts}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource Texte}"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+    </StackPanel>
+</UserControl>

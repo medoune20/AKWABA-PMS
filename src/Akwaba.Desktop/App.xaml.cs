@@ -41,6 +41,12 @@ public partial class App : Application
                 services.AddSingleton<ServiceAuth>();
                 services.AddSingleton<ServiceSync>();
                 services.AddSingleton<ServiceConnectivite>();
+                services.AddSingleton<ServiceReceptionLocale>();
+                services.AddSingleton<ServiceCaisseLocale>();
+                services.AddSingleton<TableauBordViewModel>();
+                services.AddSingleton<ReservationsViewModel>();
+                services.AddSingleton<DetailSejourViewModel>();
+                services.AddSingleton<CaisseViewModel>();
                 services.AddSingleton<ShellViewModel>();
                 services.AddSingleton<MainWindow>();
             })

@@ -1,7 +1,18 @@
 <Application x:Class="Akwaba.Desktop.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Akwaba.Desktop"
+             xmlns:vm="clr-namespace:Akwaba.Desktop.ViewModels"
+             xmlns:vues="clr-namespace:Akwaba.Desktop.Vues">
     <Application.Resources>
+        <local:BoolVersVisibilite x:Key="BoolVisible"/>
+        <local:BoolVersVisibilite x:Key="BoolInvisible" Inverser="True"/>
+
+        <DataTemplate DataType="{x:Type vm:TableauBordViewModel}"><vues:TableauBordView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ReservationsViewModel}"><vues:ReservationsView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DetailSejourViewModel}"><vues:DetailSejourView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:CaisseViewModel}"><vues:CaisseView/></DataTemplate>
+
         <Color x:Key="AccentColor">#FF0F6E6E</Color>
         <SolidColorBrush x:Key="Accent" Color="{StaticResource AccentColor}"/>
         <SolidColorBrush x:Key="AccentClair" Color="#FFD7ECEC"/>

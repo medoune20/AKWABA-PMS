@@ -8,13 +8,14 @@ synchronise avec la plateforme web AKWABA (`lp2medoune.com/gestionhotel`).
 - **Lot 0 — API de synchronisation (serveur)** : fait. Endpoints `/api/auth/login`, `/api/sync/ping|pull|push` (JWT).
 - **Lot 1 — Socle desktop & base locale** : fait. Projet WPF, base SQLite locale, connexion en ligne + déverrouillage hors ligne (PBKDF2 en cache).
 - **Lot 2 — Moteur de synchronisation** : fait. Outbox, push idempotent, pull delta par curseur.
-- **Lot 3 — Réception (clients, plan, check-in/out, note)** : à venir (prochain incrément).
-- **Lot 4 — Caisse (session, encaissement espèces/carte)** : à venir.
+- **Lot 3 — Réception (clients, réservation, check-in/out, note)** : fait.
+- **Lot 4 — Caisse (session, encaissement espèces/carte, clôture)** : fait.
 - **Lot 5 — Packaging MSIX** : à venir.
 
-La version actuelle est une **tranche verticale fonctionnelle** : on se connecte (en ligne ou hors
-ligne), on voit l'état de connectivité et la file d'attente, et on synchronise manuellement. Les
-écrans métier (réception/caisse) s'ajouteront par-dessus ce socle.
+La version actuelle est **fonctionnelle de bout en bout** : connexion (en/hors ligne), tableau de
+bord, réservations (création, check-in/out, note de chambre, encaissement espèces/carte), caisse
+(ouverture/clôture), et synchronisation avec le serveur. Reste le packaging MSIX (Lot 5) et, en
+option v2, le POS restaurant et le chiffrement SQLCipher.
 
 ## Prérequis (poste Windows)
 

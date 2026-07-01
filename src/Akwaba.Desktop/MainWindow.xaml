@@ -66,35 +66,38 @@
             </Border>
         </Grid>
 
-        <!-- Espace connecté (socle ; les écrans réception/caisse arrivent à l'incrément suivant) -->
-        <Grid Style="{StaticResource VisibleSiConnecte}" Margin="24">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <DockPanel Grid.Row="0">
-                <StackPanel>
-                    <TextBlock Text="{Binding TenantNom}" FontSize="20" FontWeight="Bold" Foreground="{StaticResource Texte}"/>
-                    <TextBlock Text="{Binding NomComplet}" Foreground="{StaticResource TexteGris}"/>
-                </StackPanel>
-                <Button Content="Déconnexion" HorizontalAlignment="Right" Background="Transparent"
-                        Foreground="{StaticResource Accent}" BorderThickness="0" Cursor="Hand" Click="BtnDeco_Click"/>
-            </DockPanel>
+        <!-- Espace connecté : navigation + contenu -->
+        <Grid Style="{StaticResource VisibleSiConnecte}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <Border Grid.Row="1" Background="{StaticResource Carte}" CornerRadius="12" Padding="20" Margin="0,16,0,0">
-                <DockPanel>
-                    <DockPanel DockPanel.Dock="Top">
-                        <TextBlock Text="Synchronisation" FontSize="16" FontWeight="Bold"/>
-                        <Button Content="Synchroniser maintenant" Style="{StaticResource BtnAccent}"
-                                HorizontalAlignment="Right" Command="{Binding SynchroniserCommand}"/>
-                    </DockPanel>
-                    <TextBlock DockPanel.Dock="Top" Margin="0,8,0,8" Foreground="{StaticResource TexteGris}">
-                        <Run Text="{Binding NbEnAttente, Mode=OneWay}"/><Run Text=" opération(s) locale(s) en attente d'envoi."/>
-                    </TextBlock>
-                    <TextBox Text="{Binding Journal, Mode=OneWay}" IsReadOnly="True" FontFamily="Consolas" FontSize="12"
-                             VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" BorderThickness="1" BorderBrush="#FFE2E5EA"/>
+            <!-- Barre latérale -->
+            <Border Grid.Column="0" Background="{StaticResource Carte}">
+                <DockPanel Margin="0,18">
+                    <StackPanel DockPanel.Dock="Top" Margin="18,0,18,18">
+                        <TextBlock Text="{Binding TenantNom}" FontWeight="Bold" FontSize="15" TextWrapping="Wrap" Foreground="{StaticResource Texte}"/>
+                        <TextBlock Text="{Binding NomComplet}" Foreground="{StaticResource TexteGris}" FontSize="12"/>
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Bottom" Margin="12,0">
+                        <Button Content="Synchroniser" Style="{StaticResource BtnAccent}" Command="{Binding SynchroniserCommand}"/>
+                        <Button Content="Déconnexion" Margin="0,8,0,0" Background="Transparent"
+                                Foreground="{StaticResource TexteGris}" BorderThickness="0" Cursor="Hand" Click="BtnDeco_Click"/>
+                    </StackPanel>
+                    <StackPanel Margin="12,0">
+                        <Button Content="Tableau de bord" Command="{Binding TableauCommand}" HorizontalContentAlignment="Left"
+                                Background="Transparent" BorderThickness="0" Padding="10,10" Cursor="Hand" Foreground="{StaticResource Texte}"/>
+                        <Button Content="Réservations" Command="{Binding ReservationsCommand}" HorizontalContentAlignment="Left"
+                                Background="Transparent" BorderThickness="0" Padding="10,10" Cursor="Hand" Foreground="{StaticResource Texte}"/>
+                        <Button Content="Caisse" Command="{Binding CaisseCommand}" HorizontalContentAlignment="Left"
+                                Background="Transparent" BorderThickness="0" Padding="10,10" Cursor="Hand" Foreground="{StaticResource Texte}"/>
+                    </StackPanel>
                 </DockPanel>
             </Border>
+
+            <!-- Contenu -->
+            <ContentControl Grid.Column="1" Content="{Binding PageCourante}" Margin="24"/>
         </Grid>
     </DockPanel>
 </Window>
